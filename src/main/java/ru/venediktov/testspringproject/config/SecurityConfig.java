@@ -1,6 +1,9 @@
 package ru.venediktov.testspringproject.config;
 
-/*
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,16 +14,24 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-*/
 
-//@Configuration
-//@EnableWebSecurity
-public class SecurityConfig {
+@Configuration
+@EnableWebSecurity
+@ConfigurationProperties(prefix = "security")
+@Getter
+@Setter
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  //WebSecurityConfigurerAdapter
-  /*@Override
+  private String login;
+  private String password;
+  private List<String> roles;
+
+  @Override
   protected void configure(HttpSecurity http) throws Exception {
-    super.configure(http);
+    http.authorizeRequests()
+        .antMatchers("/api/**").fullyAuthenticated()
+        .and()
+        .httpBasic();
   }
 
   @Bean
@@ -28,14 +39,24 @@ public class SecurityConfig {
   protected UserDetailsService userDetailsService() {
     return new InMemoryUserDetailsManager(
         User.builder()
-            .username("admin")
-            .password(passwordEncoder().encode("admin"))
-            .roles("ADMIN")
+            .username(login)
+            .password(passwordEncoder().encode(password))
+            .roles(roles.toArray(new String[0]))
             .build());
   }
+
+  /*@Bean
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+      auth.inMemoryAuthentication()
+              .passwordEncoder(passwordEncoder())
+              .withUser("admin")
+              .password("admin")
+              .roles("ADMIN");
+  }*/
 
   @Bean
   protected PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder(12);
-  }*/
+  }
 }
