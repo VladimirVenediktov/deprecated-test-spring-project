@@ -26,14 +26,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private String password;
   private List<String> roles;
 
+  // авторизация
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .antMatchers("/api/**").fullyAuthenticated()
         .and()
-        .httpBasic();
+        .formLogin();
   }
 
+  // аутентификация
   @Bean
   @Override
   protected UserDetailsService userDetailsService() {
@@ -45,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .build());
   }
 
+  // другой вариант аутентификации
   /*@Bean
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
