@@ -1,4 +1,4 @@
-package ru.venediktov.testspringproject.rest;
+package ru.venediktov.testspringproject.controller;
 
 import java.net.URI;
 import javax.validation.Valid;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.venediktov.testspringproject.model.ToDo;
-import ru.venediktov.testspringproject.model.ToDoBuilder;
+import ru.venediktov.testspringproject.model.Developer;
+import ru.venediktov.testspringproject.model.DeveloperBuilder;
 import ru.venediktov.testspringproject.repository.CommonRepository;
 import ru.venediktov.testspringproject.validation.ToDoValidationError;
 import ru.venediktov.testspringproject.validation.ToDoValidationErrorBuilder;
@@ -26,52 +26,54 @@ import ru.venediktov.testspringproject.validation.ToDoValidationErrorBuilder;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class ToDoController {
+public class DeveloperJDBCController {
 
-  private final CommonRepository<ToDo> toDoRepository;
+  private final CommonRepository<Developer> developerCommonRepository;
 
-  @GetMapping("/todo")
-  public ResponseEntity<Iterable<ToDo>> getToDos() {
-    return ResponseEntity.ok(toDoRepository.findAll());
+  // curl -s http://localhost:8888/api/developer | jq
+  @GetMapping("/developer")
+  public ResponseEntity<Iterable<Developer>> getToDos() {
+    return ResponseEntity.ok(developerCommonRepository.findAll());
   }
 
-  @GetMapping("/todo/{id}")
-  public ResponseEntity<ToDo> getToDoById(@PathVariable String id) {
-    return ResponseEntity.ok(toDoRepository.findById(id));
+  @GetMapping("/developer/{id}")
+  public ResponseEntity<Developer> getToDoById(@PathVariable String id) {
+    return ResponseEntity.ok(developerCommonRepository.findById(id));
   }
 
-  @PatchMapping("/todo/{id}")
-  public ResponseEntity<ToDo> setCompleted(@PathVariable String id) {
-    ToDo result = toDoRepository.findById(id);
-    result.setCompleted(true);
-    toDoRepository.save(result);
+  @PatchMapping("/developer/{id}")
+  public ResponseEntity<Developer> setCompleted(@PathVariable String id) {
+    Developer result = developerCommonRepository.findById(id);
+    result.setActive(true);
+    developerCommonRepository.save(result);
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
         .buildAndExpand(result.getId()).toUri();
 
     return ResponseEntity.ok().header("Location",location.toString()).build();
   }
 
-  @RequestMapping(value="/todo", method = {RequestMethod.POST,RequestMethod.PUT})
-  public ResponseEntity<?> createToDo(@Valid @RequestBody ToDo toDo, Errors errors) {
+  // curl -i -X POST -H "Content-type: application/json" -d '{"name":"Alex"}' http://localhost:8888/api/developer
+  @RequestMapping(value="/developer", method = {RequestMethod.POST,RequestMethod.PUT})
+  public ResponseEntity<?> createToDo(@Valid @RequestBody Developer developer, Errors errors) {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ToDoValidationErrorBuilder.fromBindingErrors(errors));
     }
 
-    ToDo result = toDoRepository.save(toDo);
+    Developer result = developerCommonRepository.save(developer);
     URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
         .buildAndExpand(result.getId()).toUri();
     return ResponseEntity.created(location).build();
   }
 
-  @DeleteMapping("/todo/{id}")
-  public ResponseEntity<ToDo> deleteToDo(@PathVariable String id) {
-    toDoRepository.delete(ToDoBuilder.create().withId(id).build());
+  @DeleteMapping("/developer/{id}")
+  public ResponseEntity<Developer> deleteToDo(@PathVariable String id) {
+    developerCommonRepository.delete(DeveloperBuilder.create().withId(id).build());
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping("/todo")
-  public ResponseEntity<ToDo> deleteToDo(@RequestBody ToDo toDo) {
-    toDoRepository.delete(toDo);
+  @DeleteMapping("/developer")
+  public ResponseEntity<Developer> deleteToDo(@RequestBody Developer developer) {
+    developerCommonRepository.delete(developer);
     return ResponseEntity.noContent().build();
   }
 

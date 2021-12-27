@@ -1,24 +1,33 @@
 package ru.venediktov.testspringproject.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
-import ru.venediktov.testspringproject.serializers.ZoneDateTimeSerializer;
-
-import java.time.ZonedDateTime;
 
 @Data
-@AllArgsConstructor
 public class Developer {
 
-  private Long id;
-  private String firstName;
-  private String lastName;
+  @NotNull
+  private String id;
+  @NotNull
+  @NotBlank
+  private String name;
+  private LocalDateTime created;
+  private LocalDateTime modified;
+  private boolean active;
 
-  /**
-   * Дата входа в систему.
-   */
-  @JsonSerialize(using = ZoneDateTimeSerializer.class)
-  private ZonedDateTime dataLogin;
+  public Developer() {
+    LocalDateTime date = LocalDateTime.now();
+    this.id = UUID.randomUUID().toString();
+    this.created = date;
+    this.modified = date;
+  }
+
+  public Developer(String description) {
+    this();
+    this.name = description;
+  }
 
 }
