@@ -1,7 +1,5 @@
 package ru.venediktov.javacore.datastructure.sorting;
 
-import java.util.Arrays;
-
 /**
  * Сортировка "пузырьком", O(n^2).
  */
@@ -9,8 +7,9 @@ public class BubbleSort {
 
   public static void main(String[] args) {
     int[] array = {1, 4, 2, 3, 9, 6, 0, 12, -1};
+    System.out.println(Utils.arrayToString(array));
     bubbleSort(array);
-    printArray(array);
+    System.out.println(Utils.arrayToString(array));
   }
 
   private static void bubbleSort(int[] array) {
@@ -27,11 +26,6 @@ public class BubbleSort {
     int temp = array[a];
     array[a] = array[b];
     array[b] = temp;
-  }
-
-  private static void printArray(int[] array) {
-    Arrays.stream(array)
-        .forEach(System.out::println);
   }
 
 }

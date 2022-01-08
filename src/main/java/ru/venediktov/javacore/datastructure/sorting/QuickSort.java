@@ -1,7 +1,5 @@
 package ru.venediktov.javacore.datastructure.sorting;
 
-import java.util.Arrays;
-
 /**
  * Быстрая сортировка, O(n log n).
  */
@@ -9,9 +7,9 @@ public class QuickSort {
 
   public static void main(String[] args) {
     int [] array = new int[] {64, 42, 73, 41, 32, 53, 16, 24, 57, 42, 74, 55, 36};
-    System.out.println(arrayToString(array));
+    System.out.println(Utils.arrayToString(array));
     quickSort(array, 0, array.length - 1);
-    System.out.println(arrayToString(array));
+    System.out.println(Utils.arrayToString(array));
   }
 
   private static void quickSort(int[] array, int from, int to) {
@@ -51,19 +49,6 @@ public class QuickSort {
     int tmp  = array[index1];
     array[index1] = array[index2];
     array[index2] = tmp;
-  }
-
-  private static String arrayToString(int[] array) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("[");
-    for (int i = 0; i < array.length; i++) {
-      if (i > 0) {
-        sb.append(", ");
-      }
-      sb.append(array[i]);
-    }
-    sb.append("]");
-    return sb.toString();
   }
 
 }
