@@ -35,14 +35,16 @@ public class SynchronizedExample {
    * Синхронизированный метод для выполнения инкремента.
    */
   private static synchronized int incrementSync() {
-    // демонстрация кейса, когда не все задачи успели выполнится
-    /*try {
+    // демонстрация кейса, когда не все задачи успели выполнится (в рамках awaitTermination)
+    try {
       if (count == 999) {
-        Thread.sleep(1005);
+        Thread.sleep(900);
+        System.out.println("Не прервалось");
       }
     } catch (InterruptedException e) {
+      System.err.println("Прерывание");
       e.printStackTrace();
-    }*/
+    }
     return count++;
   }
 
@@ -57,8 +59,10 @@ public class SynchronizedExample {
    * Работу исполнителей надо завершать явно.
    */
   public static void stop(ExecutorService executor) {
-    executor.shutdown();
+    executor.shutdown();// закрываем пул, чтобы он больше не мог принять новых задач
     try {
+      // ждем заданный промежуток времени пока все задания не будут выполнены,
+      // после которого если что-то не успело выполниться - будет прервано
       if (!executor.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
         executor.shutdownNow();
       }
