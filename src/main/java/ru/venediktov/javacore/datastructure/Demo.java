@@ -52,6 +52,7 @@ public class Demo {
     while (iterator.hasNext()) {
       iterator.next();
       iterator.set(new Random().nextInt());
+      //linkedList.add(4);//нельзя так, ConcurrentModificationException
     }
     long end = System.currentTimeMillis();
     System.out.println(String.format("Элементы добавлены за %d мс", end - start));
