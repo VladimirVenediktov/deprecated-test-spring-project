@@ -1,38 +1,30 @@
 package ru.venediktov.testspringproject.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.venediktov.testspringproject.model.User;
-
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import ru.venediktov.testspringproject.repository.UserDataJPARepository;
 
 /**
  * По видео-уроку https://www.youtube.com/watch?v=7uxROJ1nduk&t=2955s
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/developers")
 public class DeveloperRestControllerV1 {
 
-  private List<User> users = Stream.of(
-      new User(1L, "Vladimir", "Venediktov", ZonedDateTime.now()),
-      new User(2L, "Ivan", "Ivanov", ZonedDateTime.now()))
-      .collect(Collectors.toList());
+  private final UserDataJPARepository userDataJPARepository;
 
   @GetMapping
-  public List<User> getAll() {
-    return users;
+  public Iterable<User> getAll() {
+    return userDataJPARepository.findAll();
   }
 
   @GetMapping("/{id}")
-  public User getById(@PathVariable Long id) {
-    return users.stream()
-        .filter(user -> user.getId().equals(id))
-        .findFirst()
-        .orElse(null);
+  public User getById(@PathVariable String id) {
+    return userDataJPARepository.findUserById(id).orElse(null);
   }
 }
